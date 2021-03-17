@@ -22,6 +22,8 @@ import hashlib
 import json
 import os
 import re
+import sys
+import time
 import uuid
 
 
@@ -304,6 +306,8 @@ def phases_check(
         system_end = None
 
         timezone_offset = int(server_sd.json_object["timezone"])
+        if time.daylight > 0:
+            timezone_offset -= time.daylight * 3600
 
         file = os.path.join(path, "mlperf_log_detail.txt")
 
@@ -490,6 +494,8 @@ def check_ptd_logs(server_sd: SessionDescriptor, path: str) -> None:
     file_path = os.path.join(path, "power", "ptd_logs.txt")
     date_regexp = r"(^\d\d-\d\d-\d\d\d\d \d\d:\d\d:\d\d.\d\d\d)"
     timezone_offset = int(server_sd.json_object["timezone"])
+    if time.daylight > 0:
+        timezone_offset -= time.daylight * 3600
 
     with open(file_path, "r") as f:
         ptd_log_lines = f.readlines()
